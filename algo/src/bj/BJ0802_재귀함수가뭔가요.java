@@ -4,7 +4,7 @@ package bj;
 import java.util.Scanner;
 
 //https://www.acmicpc.net/problem/17478
-public class BJ_재귀함수가뭔가요_0802 {		
+public class BJ0802_재귀함수가뭔가요 {		
 	
 	public static void print_(int n) {
 		for(int i=0;i<n;i++) {

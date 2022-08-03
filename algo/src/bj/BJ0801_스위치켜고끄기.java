@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BJ_스위치켜고끄기_0801 {
+public class BJ0801_스위치켜고끄기 {
 	static int N, count;
 	static int[] switches;
 	static int gender, num;

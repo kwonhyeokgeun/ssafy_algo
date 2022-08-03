@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 
 //https://swexpertacademy.com/main/code/problem/problemDetail.do
 
-public class EA_ladder1_0802 {
+public class EA0802_ladder1 {
 	
 	public static int find() {
 		visited[cx][cy]=1;

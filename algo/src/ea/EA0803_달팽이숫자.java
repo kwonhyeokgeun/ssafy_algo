@@ -4,23 +4,26 @@ import java.util.Scanner;
 
 //https://swexpertacademy.com/main/code/problem/problemDetail.do
 
-public class EA_달팽이숫자_0802 {
+public class EA0803_달팽이숫자 {
 
 	public static void marking() {
-        int dr=0, x=0,y=0;
-        int nx,ny;
-        for(int i=1; i<=N*N;i++) {
-            mat[y][x]=i;
-            nx=x+dirs[dr][0];
-            ny=y+dirs[dr][1];
-            if(nx<0 || nx>=N || ny<0 || ny>=N || mat[ny][nx]!=0) {
-                dr=(dr+1)%4;
-                x=x+dirs[dr][0];
-                y=y+dirs[dr][1];
-                continue;
+        int d=1; //1:증가, -1:감소
+        int nx,ny, x=-1,y=0;
+        int count=N;
+        
+        int n=1;
+        while(n<=N*N) { 
+            for(int i=0; i<count; i++) {//우좌우좌...
+            	x+=d;
+            	mat[y][x]=n++;
             }
-            x=nx;
-            y=ny;
+        	
+        	count--;
+        	for(int i=0; i<count; i++) { //하상하상..
+        		y+=d;
+        		mat[y][x]=n++;
+        	}
+        	d=d*(-1); //방향전환
         }
     }
  

@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 
 //https://swexpertacademy.com/main/code/problem/problemDetail.do
 
-public class EA_flatten_0802 {
+public class EA0802_flatten {
 	static public void dump() {
 		int max=0,min=100;
 		int maxi=0,mini=0;
