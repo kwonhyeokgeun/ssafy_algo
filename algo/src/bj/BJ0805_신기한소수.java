@@ -2,7 +2,7 @@ package bj;
 
 import java.util.Scanner;
 
-public class EA0805_신기한소수 {
+public class BJ0805_신기한소수 {
 
 	static public boolean is_prime(int num) {
 		if (num<2) return false;

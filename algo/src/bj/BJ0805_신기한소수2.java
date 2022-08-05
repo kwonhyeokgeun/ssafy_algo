@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 //재귀말고 Stack을 사용한 방식
 
-public class EA0805_신기한소수2 {
+public class BJ0805_신기한소수2 {
 
 	static public boolean is_prime(int num) {
 		if (num<2) return false;
