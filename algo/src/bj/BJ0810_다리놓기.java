@@ -8,9 +8,7 @@ import java.util.StringTokenizer;
 public class BJ0810_다리놓기 {
 	
 	public static void cal(int n1, int n2) {
-		if (n2/2<n1) {
-			n1=n2-n1;
-		}
+		n1=Math.min(n1, n2-n1);
 		
 	}
 	
