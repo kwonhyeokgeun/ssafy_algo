@@ -12,103 +12,91 @@ import java.util.StringTokenizer;
 
 public class BJ_SAMSUNG2 {
 	
-	static void go() {
+	static void search(int f, int e, int r) {//첫자리 수, 자릿수, 나머지
+		if(e>9) { //자릿수 10 넘음
+			F=-1;
+			answer=-1;
+			return;
+		}
 		
-		for(int i=0; i<M; i++) {
-			int dr=orders[i];
-			int nx=cx+dirs[dr][0];
-			int ny=cy+dirs[dr][1];
-			if(nx<0 || ny<0 || nx>=w || ny>=h) 
-				continue;
-			
-			moveDice(dr); //주사위 굴리기
-			
-			if(mat[ny][nx]==0) {
-				mat[ny][nx]=dicec[3];
+		if(f<e) {  //100같이 진행 할게 없는 경우
+			int nf=f+1;
+			if(nf==10) {
+				search(1,e+1,r);
 			}else {
-				dicec[3]=mat[ny][nx];
-				mat[ny][nx]=0;
+				search(nf,e,r);
 			}
-			sb.append(dicer[1]+"\n");
-			cx=nx;cy=ny;
+		}
+		else {
+			int num=1;
+			for(int i=0; i<e; i++) {
+				num*=(f-i);
+			}
+			num/=e;
+			if(r-num<0) { //끝
+				F=f; E=e; R=r;
+				return;
+			}else {
+				int nf=f+1;
+				if(nf==10) {
+					search(1,e+1,r-num);
+				}else {
+					search(nf,e,r-num);
+				}
+			}
+		}
+	}
+
+	static void cal() {
+		if(F==-1) {
+			return;
+		}
+		
+		answer=F*(int)(Math.pow(10, E));
+		int[] lst=new int[F];
+		for(int i=0; i<F; i++) {
+			lst[i]=i;
+		}
+		int [] idxs=new int[E];
+		for(int i=0; i<E;i++) {
+			idxs[i]=i;
+		}
+		for(int i=0; i<R;i++) {
+			up(idxs);
+		}
+		for(int i=0; i<E;i++) {
+			answer+=idxs[i]*Math.pow(10, i);
+		}
+	}
+	static void up(int[] idxs) {
+		int ui=E-1;
+		for(int i=0; i<E-1;i++) {
+			if(idxs[i]!=idxs[i+1]-1) { 
+				ui=i;
+				break;
+			}
+		}
+		
+		idxs[ui]+=1;
+		for(int i=0; i<ui; i++) {
+			idxs[i]=i;
 		}
 	}
 	
-	static void moveDice(int dr) {
-		if (dr==1) {//동
-			int temp=dicer[2];
-			dicer[2]=dicer[1];
-			dicer[1]=dicer[0];
-			dicer[0]=dicec[3];
-			dicec[3]=temp;
-			dicec[1]=dicer[1];
-		}else if(dr==4) { //남
-			int temp=dicec[3];
-			dicec[3]=dicec[2];
-			dicec[2]=dicec[1];
-			dicec[1]=dicec[0];
-			dicec[0]=temp;
-			dicer[1]=dicec[1];
-		}else if(dr==2) { //서
-			int temp=dicer[0];
-			dicer[0]=dicer[1];
-			dicer[1]=dicer[2];
-			dicer[2]=dicec[3];
-			dicec[3]=temp;
-			dicec[1]=dicer[1];
-		}else { //북
-			int temp=dicec[0];
-			dicec[0]=dicec[1];
-			dicec[1]=dicec[2];
-			dicec[2]=dicec[3];
-			dicec[3]=temp;
-			dicer[1]=dicec[1];
-		}
-		/*
-		System.out.println("r :"+Arrays.toString(dicer));
-		System.out.println("c :"+Arrays.toString(dicec));
-		System.out.println();*/
-	}
-	
-	
-	static int [][]dirs= {{},{1,0},{-1,0},{0,-1},{0,1}};
-	static int h,w,M;
-	static int[] orders;
-	static int[][] mat;
-	static int[] dicec;
-	static int[] dicer;
-	static int cx,cy;
-	static StringBuffer sb;
+	static int N, answer;
+	static int F, E, R; //첫자리 수, 자릿수, 나머지
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer stn = new StringTokenizer(br.readLine());
-		h=Integer.parseInt(stn.nextToken());
-		w=Integer.parseInt(stn.nextToken());
-		cy=Integer.parseInt(stn.nextToken());
-		cx=Integer.parseInt(stn.nextToken());
-		M=Integer.parseInt(stn.nextToken());
-		mat=new int[h][w];
-		
-		for(int y=0; y<h; y++) {
-			stn = new StringTokenizer(br.readLine());
-			for(int x=0; x<w; x++) {
-				mat[y][x]=Integer.parseInt(stn.nextToken());
-			}
+		N=Integer.parseInt(br.readLine());
+		if(N<=9) {
+			System.out.println(N);
+		}else {
+			search(1,1,N-10); //10부터 시작
+			System.out.println(F+" " +E+" "+R);
+			cal();
+			System.out.println(answer);
 		}
-		orders=new int[M];
-		stn = new StringTokenizer(br.readLine());
-		
-		for(int i=0; i<M; i++)
-			orders[i]=Integer.parseInt(stn.nextToken());
-		
-		dicer=new int[]{0,0,0};
-		dicec=new int[]{0,0,0,0};
-		
-		sb = new StringBuffer();
-		go();
-	
-		System.out.println(sb);
-		
+			
 	}
 
 	
