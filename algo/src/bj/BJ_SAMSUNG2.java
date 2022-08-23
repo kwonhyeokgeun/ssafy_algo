@@ -9,7 +9,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
+//감소하는 수
 public class BJ_SAMSUNG2 {
 	
 	static void search(int f, int e, int r) {//첫자리 수, 자릿수, 나머지

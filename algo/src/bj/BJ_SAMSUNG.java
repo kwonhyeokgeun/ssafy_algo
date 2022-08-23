@@ -126,7 +126,7 @@ public class BJ_SAMSUNG {
 		for(int y=4; y>=0; y--) {
 			for(int x=4; x>=0; x--) {
 				mark>>=1;
-				if((mark&1)==1) {
+				if((mark&1)!=0) {
 					mat[y][x]=true;
 				}
 			}
