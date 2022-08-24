@@ -36,7 +36,11 @@ public class BJ_SAMSUNG3 {
 				return;
 			}
 		}
-		for(int y=sy; y<)
+		for(int y=sy; y<h; y++) { //확인하며 추가하기
+			for(int x=sx; x<=sx+1; x++) {
+				
+			}
+		}
 	}
 	
 	static int h,w,N,answer;
