@@ -11,54 +11,44 @@ public class BJ0822_돌던지기 {
 	static void goDown(int idx) {
 		int cx=idx; //화산탄 x
 		int cy=0;    //화산탄 y
+		int py=cy;
 		while (cy<h-1) {
 			if(mat[cy+1][cx]==-1) { //아래가 'X'면
-				int check=mat[cy][cx];
 				mat[cy][cx]=-2; //'O'
-				for(int y=cy-1; y>=0; y--) { //dp 최신화
-					if(mat[y][cx]==check) {
-						mat[y][cx]=check-1;
-					}else {
-						break;
-					}
-				}
+				if(cy!=py)
+					mat[py][cx]=cy;
 				return;
 			}
 			else if(mat[cy+1][cx]>=0) { //아래가 뚫렸으면
-				cy=mat[cy][cx]-1;
+				py=cy;
+				int ny=mat[cy][cx]-1;
+				while(mat[ny][cx]<0) {
+					ny--;
+				}
+				mat[cy][cx]=ny+1;
+				cy=ny;
 			}
 			else { //아래가 'O'면
 				if(cx!=0 && mat[cy][cx-1]>=0 && mat[cy+1][cx-1]>=0) { //왼쪽으로 갈 수 있음.
 					cx--;
-					cy=mat[cy][cx]-1;
+					
 				}else if(cx!=w-1 && mat[cy][cx+1]>=0 && mat[cy+1][cx+1]>=0) { //오른쪽 갈 수 있음
 					cx++;
-					cy=mat[cy][cx]-1;
+					
 				}else { //왼쪽 오른쪽 다막힘
-					int check=mat[cy][cx];
 					mat[cy][cx]=-2; //'O'
-					for(int y=cy-1; y>=0; y--) { //dp 최신화
-						if(mat[y][cx]==check) {
-							mat[y][cx]=check-1;
-						}else {
-							break;
-						}
-					}
+					if(cy!=py)
+						mat[py][cx]=cy;
 					return;
 				}
 			}
 		}
 		
 		//제일 밑까지 굴러 떨어진 경우
-		int check=mat[cy][cx];
+
 		mat[cy][cx]=-2; //'O'
-		for(int y=cy-1; y>=0; y--) { //dp 최신화
-			if(mat[y][cx]==check) {
-				mat[y][cx]=check-1;
-			}else {
-				break;
-			}
-		}
+		if(cy!=py)
+			mat[py][cx]=cy;
 		
 	}
 	
