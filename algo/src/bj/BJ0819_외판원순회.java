@@ -8,40 +8,46 @@ import java.util.StringTokenizer;
 //https://www.acmicpc.net/problem/2098
 public class BJ0819_외판원순회 {
 	
-	static void rec(int n, int pi, int time, int cmask) {
-		if(n==N-1) {
-			if(mat[pi][0]!=0) {
-				answer=Math.min(answer, time+mat[pi][0]);
+	static void rec(int e,int n, int mask) {
+		if(n==N) {
+			if(mat[e][0]!=0) {
+				answer=Math.min(answer, mem[e][mask]+mat[e][0]);
 			}
 			return;
 		}
 		
-		for(int i=1; i<N; i++) {
-			if((cmask& 1<<i)!=0 || mat[pi][i]==0) {
-				continue;
+		if(n==1) {
+			for(int i=1; i<N; i++) {
+				if(mat[0][i]==0)continue;
+				int nmask=mask|(1<<i);
+				mem[i][nmask]=mat[0][i];
+				rec(i,2,nmask);
 			}
-			int time2 = time+mat[pi][i];
-			if(time2>=answer) {
-				continue;
+		}
+		else {
+			for(int i=1; i<N; i++) {
+				int bit=(1<<i);
+				if( (mask&bit)!=0 || mat[e][i]==0) continue;
+				int nmask = mask| bit;
+				int sum=mem[e][mask]+mat[e][i];
+				if(mem[i][nmask]==0 || mem[i][nmask] >sum) {
+					mem[i][nmask] =sum;
+					rec(i,n+1,nmask);
+				}
+				
 			}
-			int nmask=cmask|1<<i;
-			if(visited[i][nmask]!=0 && visited[i][nmask] <=time2) 
-				continue;
-			visited[i][nmask]=time2;
-			rec(n+1,i,time2, nmask);
-			
 		}
 	}
 
 	static int N, answer;
 	static int[][] mat;
-	static int[][] visited;
+	static int[][] mem;
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer stn;
 		N=Integer.parseInt(br.readLine());
 		answer=Integer.MAX_VALUE;
-		visited=new int[N][1<<N+1];
+		mem=new int[N][1<<N+1];
 		mat=new int[N][N];
 		for(int y=0; y<N; y++) {
 			stn=new StringTokenizer(br.readLine());
@@ -49,7 +55,10 @@ public class BJ0819_외판원순회 {
 				mat[y][x]=Integer.parseInt(stn.nextToken());
 			}
 		}
-		rec(0,0,0,1);
+
+		rec(0,1,1);
+		
+		
 		System.out.println(answer);
 	}
 
