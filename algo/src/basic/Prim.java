@@ -27,7 +27,7 @@ public class Prim {
 	static long answer;
 	static int[] root;
 	static PriorityQueue<Edge> hp;
-	static ArrayList<List<Edge>> graph;
+	static List<List<Edge>> graph;
 	static boolean[] visited;
 	public static void main(String[] args) throws  IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

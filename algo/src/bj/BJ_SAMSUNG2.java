@@ -13,40 +13,51 @@ import java.util.StringTokenizer;
 public class BJ_SAMSUNG2 {
 	
 	static void search(int f, int e, int r) {//첫자리 수, 자릿수, 나머지
-		if(e>9) { //자릿수 10 넘음
+		if(e>10) { //자릿수 10 넘음
+			System.out.printf("f:%d, e:%d, r:%d\n",f,e,r);
 			F=-1;
 			answer=-1;
 			return;
 		}
 		
 		if(f<e) {  //100같이 진행 할게 없는 경우
-			int nf=f+1;
-			if(nf==10) {
-				search(1,e+1,r);
+			System.out.printf("f:%d, e:%d, r:%d\n",f,e,r);
+			if(f==9) { //첫째수가 9
+				search(1,e+1,r); //자릿수 증가
 			}else {
-				search(nf,e,r);
+				System.out.println("!!");
+				search(f+1,e,r); //첫째수 증가
 			}
 		}
 		else {
-			int num=1;
-			for(int i=0; i<e; i++) {
-				num*=(f-i);
-			}
-			num/=e;
+			int num=C(f,e); //f와 e일때 가능한 경우의 수
+			System.out.printf("f:%d, e:%d, r:%d, num:%d\n",f,e,r,num);
 			if(r-num<0) { //끝
 				F=f; E=e; R=r;
+				System.out.println("끝");
 				return;
 			}else {
-				int nf=f+1;
-				if(nf==10) {
+				if(f==9) {
 					search(1,e+1,r-num);
 				}else {
-					search(nf,e,r-num);
+					System.out.println("!!!");
+					search(f+1,e,r-num);
 				}
 			}
 		}
 	}
 
+	static int C(int f, int e) {
+		int ret=1;
+		e=Math.min(e, f-e);
+		for(int i=0; i<e; i++) {
+			ret*=(f-i);
+		}
+		for(int i=2; i<=e;i++) {
+			ret/=i;
+		}
+		return ret;
+	}
 	static void cal() {
 		if(F==-1) {
 			return;
@@ -68,6 +79,7 @@ public class BJ_SAMSUNG2 {
 			answer+=idxs[i]*Math.pow(10, i);
 		}
 	}
+	
 	static void up(int[] idxs) {
 		int ui=E-1;
 		for(int i=0; i<E-1;i++) {
@@ -83,10 +95,12 @@ public class BJ_SAMSUNG2 {
 		}
 	}
 	
-	static int N, answer;
+	static int N;
+	static long answer;
 	static int F, E, R; //첫자리 수, 자릿수, 나머지
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
 		N=Integer.parseInt(br.readLine());
 		if(N<=9) {
 			System.out.println(N);
