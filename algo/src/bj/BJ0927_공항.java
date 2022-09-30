@@ -14,24 +14,20 @@ public class BJ0927_공항 {
 			int p = plains[i];
 			int pm=p/1000;
 			int pr=p%1000;
-			for(int j=pm; j<101; j++) {
-				airports1000[j]++;
+			for(int j=pm+1; j<101; j++) {
+				airports1000[j]++;  //1000단위 업데이트
 				if((j+1)*1000<=airports1000[j]) {
-					System.out.println("a : "+i + " "+(j+1)*1000+" " + airports1000[j]);
 					return i;
-					//asdf
 				}
 			}
-			for(int j=0; j<=pr; j++) {
-				airports[pm][j]++;
+			for(int j=pr; j<1000; j++) {
+				airports[pm][j]++;  //일단위 업데이트
 				if(pm>0) {
-					if (airports1000[pm-1]+airports[pm][j] > p) {
-						System.out.println("b : "+i + " " + airports1000[pm-1]+airports[pm][j] + " "+p);
+					if (airports1000[pm-1]+airports[pm][j] > pm*1000+j) { //현재 일단위 + 바로 앞 1000단위 누적
 						return i;
 					}
 				}else {
-					if (airports[pm][j] > p) {
-						System.out.println("c : "+i + " " + airports[pm][j] + " "+p);
+					if (airports[pm][j] > j) {
 						return i;
 					}
 				}
@@ -44,8 +40,8 @@ public class BJ0927_공항 {
 	
 	static int G,P;
 	static int[] plains;
-	static int[][] airports;
-	static int[] airports1000;
+	static int[][] airports; //100 * 1000, 1단위 가짐
+	static int[] airports1000;  //1000단위씩 가짐
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		G=Integer.parseInt(br.readLine());
