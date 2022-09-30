@@ -19,6 +19,7 @@ public class BJ0927_공항 {
 				if((j+1)*1000<=airports1000[j]) {
 					System.out.println("a : "+i + " "+(j+1)*1000+" " + airports1000[j]);
 					return i;
+					//asdf
 				}
 			}
 			for(int j=0; j<=pr; j++) {
