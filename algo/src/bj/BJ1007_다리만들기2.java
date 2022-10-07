@@ -46,7 +46,7 @@ public class BJ1007_다리만들기2 {
 			for(int x=0; x<W; x++) {
 				if(mat[y][x]!=0) {
 					int s1=mat[y][x];
-					for(int dr=0; dr<4; dr++) {
+					for(int dr=0; dr<2; dr++) {
 						int nx=x+dirs[dr][0];
 						int ny=y+dirs[dr][1];
 						if(nx<0 || ny<0 || nx>=W || ny>=H || mat[ny][nx]!=0) continue;
