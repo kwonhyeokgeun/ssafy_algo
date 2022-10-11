@@ -1,92 +1,252 @@
 package basic;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
+/*
+ #1 179
+#2 330
+#3 48
+#4 663822 */
 public class Solution {
-	
-	static void init() {
-		for(int n=0; n<h*w; n++) {
-			if(n%w==0) {
-				for(int dr=0; dr<4; dr++) {
-					int nn=n+dirs[dr];
-					if(nn>=h*w || nn<0) continue;
-					cells[n].link[dr]=nn;
-				}
-			}else if(n%w==w-1) {
-				for(int dr=0; dr<6; dr++) {
-					if(dr==1|| dr==2) continue;
-					int nn=n+dirs[dr];
-					if(nn>=h*w || nn<0) continue;
-					cells[n].link[dr]=nn;
-				}
-			}else {
-				for(int dr=0; dr<6; dr++) {
-					int nn=n+dirs[dr];
-					if(nn>=h*w || nn<0) continue;
-					cells[n].link[dr]=nn;
-				}
+	static BufferedReader br;
+	static BufferedWriter bw;
+	static int T;
+	static int answer;
+	static int N, M, K, C;
+	static int[][] arr;
+	static int[][] nextTree;
+	static int[][] destroyTree;
+	static int[][] jechoje;
+	static int[] dx = { -1, 1, 0, 0 };
+	static int[] dy = { 0, 0, -1, 1 };
+	// 대각선
+	static int[] tx = { -1, -1, 1, 1 };
+	static int[] ty = { -1, 1, -1, 1 };
+
+	/*
+	 * 5 4 5 5 0 0 0 0 0 0 0 0 -1 1 0 0 5 0 0 4 0 0 0 0 2 0 -1 0 0
+	 * 
+	 */
+	public static void main(String[] args) throws IOException {
+		br = new BufferedReader(new InputStreamReader(System.in));
+		 bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		// T = Integer.parseInt(st.nextToken());
+
+		 //for (int t = 1; t <= T; t++) {
+		answer = 0;
+		// st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken()); // 배열 크기
+		M = Integer.parseInt(st.nextToken()); // 박멸이 진행되는 년 수
+		K = Integer.parseInt(st.nextToken()); // 제초제의 확산 범위 k(칸)
+		C = Integer.parseInt(st.nextToken()); // 제초제가 남아있는 년 수 c
+
+		arr = new int[N + 1][N + 1];
+		jechoje = new int[N + 1][N + 1];
+		nextTree = new int[N + 1][N + 1];
+		destroyTree = new int[N + 1][N + 1];
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
+
+		for (int m = 0; m < M; m++) {
+			// 1.성장
+			growth();
+			// 2.번식
+			spreadTree();
+
+			// 3.박멸
+			countDestroy();
+
+			checkJechoje();
+			// 4. 나무 그루 확인 및 제초제
+			destroy();
+
+			// 5. 제초제 확인
+			// int xxx = 1;
+		}
+		System.out.println(answer);
+		 //}
 	}
-	
-	static void find() {
-		for(int n=0; n<h*w; n++) {
-			
+
+	private static void checkJechoje() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (jechoje[i][j] >= 1) {
+					jechoje[i][j]--;
+				}
+			}
 		}
 	}
 
-	static long answer;
-	static int h,w;
-	static Cell[] cells;
-	static StringBuffer sb = new StringBuffer();
-	static int[] dirs;
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer stn;
-		int T=Integer.parseInt(br.readLine());
-		for(int tc=1; tc<=T; tc++) {
-			stn=new StringTokenizer(br.readLine());
-			w=Integer.parseInt(stn.nextToken());
-			h=Integer.parseInt(stn.nextToken());
-			for(int y=0; y<h; y++) {
-				stn=new StringTokenizer(br.readLine());
-				for(int x=0; x<w; x++) {
-					int n=y*w+x;
-					cells[n]=new Cell(n,Integer.parseInt(stn.nextToken()));
+	private static void destroy() {
+		System.out.println("제초전");
+		for(int i=0; i<N;i++) {
+			System.out.println(Arrays.toString(arr[i]));
+		}System.out.println();
+		for(int i=0; i<N;i++) {
+			System.out.println(Arrays.toString(jechoje[i]));
+		}System.out.println();
+		int x = 0;
+		int y = 0;
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (destroyTree[i][j] > 0) {
+					if (max < destroyTree[i][j]) {
+						x = i;
+						y = j;
+						max = destroyTree[i][j];
+					}
+
 				}
 			}
-			
-			dirs=new int[] {-w, +1, w+1, w, w-1, -1};
-			
-			
+		}
+		// 제초제 뿌리기
+		answer += destroyTree[x][y];
+		System.out.println(y+" ,"+x +", "+destroyTree[x][y]);
+		arr[x][y] = 0;
+		jechoje[x][y] += C;
+		for (int k = 0; k < 4; k++) {// 대각선으로
+			for (int l = 1; l <= K; l++) {
+				int tempx = x + tx[k] * l;
+				int tempy = y + ty[k] * l;
+				if (!isRange(tempx, tempy))
+					break;
+				if (arr[tempx][tempy] == 0) {
+					jechoje[tempx][tempy] = C;
+					break;
+				}
+				if (arr[tempx][tempy] == -1)
+					break;
+				if (destroyTree[tempx][tempy] > 0) {
+					jechoje[tempx][tempy] = C;
+					arr[tempx][tempy] = 0;
+				}
+			}
+		}
+		System.out.println("제초후");
+		for(int i=0; i<N;i++) {
+			System.out.println(Arrays.toString(arr[i]));
+		}System.out.println();
+		for(int i=0; i<N;i++) {
+			System.out.println(Arrays.toString(jechoje[i]));
+		}System.out.println("======");
+	}
+
+	private static void countDestroy() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (arr[i][j] > 0) {
+					int sum = arr[i][j];
+					for (int k = 0; k < 4; k++) {// 대각선으로
+						boolean ch = false;
+						for (int l = 1; l <= K; l++) {
+							if (!ch) {
+								// 확산 범위
+								int tempx = i + tx[k] * l;
+								int tempy = j + ty[k] * l;
+								// 도중 벽이 있거나 나무가 아얘 없는 칸이 있는 경우,
+								// 그 칸 까지는 제초제가 뿌려지며 그 이후의 칸으로는 제초제가 전파되지 않습니
+								if (isRange(tempx, tempy)) {
+									if (arr[tempx][tempy] <= 0) {
+										ch = true;
+									} else {
+										sum += arr[tempx][tempy];
+									}
+								}
+							}
+						}
+					}
+					destroyTree[i][j] += sum;
+				}
+			}
 		}
 	}
-	
-	
-	static class Cell{
-		int num, user;
-		public int[] link=new int[] {-1,-1,-1,-1,-1,-1};
-		
-		public Cell(int num,int user) {
-			this.num=num;
-			this.user=user;
+
+	private static void spreadTree() {
+		nextTree = new int[N + 1][N + 1];
+		destroyTree = new int[N + 1][N + 1];
+		// 기존에 있었던 나무들은 인접한 4개의 칸 중 벽, 다른 나무, 제초제 모두 없는 칸에 번식을 진행합니다.
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (arr[i][j] > 0) {
+					// 나무일때
+					int cnt = 0;
+					for (int k = 0; k < 4; k++) {
+						int tempx = i + dx[k];
+						int tempy = j + dy[k];
+						if (isRange(tempx, tempy)) {
+							if (arr[tempx][tempy] == 0 && jechoje[tempx][tempy] == 0) {
+								// 옆에가 나무거나 벽일때
+								cnt++;
+							}
+						}
+					}
+					// 각 칸의 나무 그루 수에서 총 번식이 가능한 칸의 개수만큼 나누어진 그루 수만큼 번식이 되며,
+					if (cnt > 0) {
+						int div = arr[i][j] / cnt;
+						for (int k = 0; k < 4; k++) {
+							int tempx = i + dx[k];
+							int tempy = j + dy[k];
+							if (isRange(tempx, tempy)) {
+								if (arr[tempx][tempy] == 0 && jechoje[tempx][tempy] == 0) {
+									// 아무것도 없을때만
+									nextTree[tempx][tempy] += div;
+								}
+							}
+						}
+					}
+
+				}
+			}
 		}
-		void set(int i, int n) {
-			link[i]=n;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (jechoje[i][j] == 0) {
+					arr[i][j] += nextTree[i][j];
+				}
+			}
+		}
+
+	}
+
+	private static void growth() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (arr[i][j] > 0) {
+					// 나무일때
+					int cnt = 0;
+					for (int k = 0; k < 4; k++) {
+						int tempx = i + dx[k];
+						int tempy = j + dy[k];
+						if (isRange(tempx, tempy) && arr[tempx][tempy] > 0 && jechoje[tempx][tempy] == 0) {
+							// 옆에도 나무일때
+							cnt++;
+						}
+					}
+					arr[i][j] += cnt;
+				}
+
+			}
 		}
 	}
-	
-	static class XY{
-		int x,y,d;
-		XY(int x, int y, int d){
-			this.x=x;
-			this.y=y;
-			this.d=d;
-		}
+
+	private static boolean isRange(int x, int y) {
+		return (x >= 0 && x < N && y >= 0 && y < N);
 	}
+
 }
-
-//https://cert.ssafy.com/exam/contest/management/problem?contestId=AYLZNBvEBqABAAXj&problemId=AVXsCsQ2K0uH3Xf2&problemNo=1
